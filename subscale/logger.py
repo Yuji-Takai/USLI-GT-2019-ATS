@@ -1,76 +1,53 @@
 from sense_hat import SenseHat
 from datetime import datetime
 
+class SensorData():
+    def __init__(self, timestamp, accel, gyro, temp, p, humidity):
+        self.timestamp = timestamp
+        self.accel = accel
+        self.gyro = gyro
+        self.temp = temp
+        self.p = p
+        self.humidity = humidity
 
-timestamp=datetime.now()
+class Logger():
+    def __init__(self):
+        self.sense = SenseHat()
+        today = datetime.today()
+        self.log_fname = "{}_{}_{}_{}:{}.csv".format(today.year, today.month, today.day, today.hour, today.minute)
 
-sense = SenseHat()
-def get_sense_data():
+    def log(self):
+        # initialize log file
+        with open(self.log_fname, 'w') as f:
+            f.write("{},{},{},{},{},{},{},{},{},{}\n".format("time", "accel_x",
+                "accel_y", "accel_z", "pitch", "roll", "yaw", "temperature",
+                "pressure", "humidity"))
         sense_data = []
-        #environmental sensors
-        sense.get_temperature()
-        sense.get_pressure()
-        sense.get_humidity()
-        #orientation
-        orientation = sense.get_orientation()
-        orientation["yaw"]
-        orientation["pitch"]
-        orientation["roll"]
-        #raw accelerometer
-        acc = sense.get_accelerometer_raw()
-        acc["x"]
-        acc["y"]
-        acc["z"]
-        #gyroscope
-        gyro = sense.get_gyroscope_raw()
-        gyro["x"]
-        gyro["y"]
-        gyro["z"]
+        counter = 0
+        while counter <= 100:
+            sense_data.append(SensorData(datetime.now(), self.sense.get_accelerometer_raw(),
+                self.sense.get_orientation(), self.sense.get_temperature(), self.sense.get_pressure(),
+                self.sense.get_humidity()))
+            counter += 1
+            if counter % 10 == 0:
+                self.write_csv(sense_data)
+                sense_data = []
 
-        datetime.now()
-
-        #append to list
-        sense_data.append(sense.get_temperature)
-        sense_data.append(sense.get_pressure)
-        sense_data.append(sense.get_humidity)
-
-        orientation=sense.get_orientation()
-        sense_data.append(orientation["yaw"])
-        sense_data.append(orientation["pitch"])
-        sense_data.append(orientation["roll"])
-
-        acc=sense.get_accelerometer_raw()
-        sense_data.append(acc["x"])
-        sense_data.append(acc["y"])
-        sense_data.append(acc["z"])
-
-        gyro=sense.get_gyroscope_raw()
-        sense_data.append(gyro["x"])
-        sense_data.append(gyro["y"])
-        sense_data.append(gyro["z"])
-
-        sense_data.append(datetime.now())
-
-        return sense_data
-
-while True:
-        print(get_sense_data())
-
-#now that we got the data let's write it to a CSV file
+    def write_csv(self, sense_data):
+        with open(self.log_fname, 'a') as f:
+            for data in sense_data:
+                f.write("{},{},{},{},{},{},{},{},{},{}\n".format(data.timestamp,
+                    data.accel['x'], data.accel['y'], data.accel['z'],
+                    data.gyro['pitch'], data.gyro['roll'], data.gyro['yaw'],
+                    data.temp, data.p, data.humidity))
 
 
-from csv import writer
+def main():
+    """
+    main function that obtains data from Sense HAT and logs data to file
+    """
+    logger = Logger()
+    logger.log()
 
-import csv
-with open('data.csv', 'w', newline='') as f:
-        data_writer = writer(f)
-
-data_writer.writerow(['temp','pres','hum',
-                          'yaw','pitch','roll',
-                      'acc_x','acc_y','acc_z',
-                      'gyro_x', 'gyro_y', 'gyro_z',
-                      'datetime'])
-
-while True:
-        data=get_sense_data
-        data_writer.writerow(data)
+if __name__ == '__main__':
+    main()
