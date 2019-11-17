@@ -22,18 +22,21 @@ class Logger():
         self.sense = SenseHat()
         today = datetime.today()
         self.log_fname = "{}_{}_{}_{}:{}.csv".format(today.year, today.month, today.day, today.hour, today.minute)
-        self.port = serial.Serial("/dev/ttyAMA0", 9600, timeout=1)
+        self.port = serial.Serial("/dev/ttyAMA0")
+        #Setting up the GPIO Pins
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.cleanup()
+        #Set baud rate to 9600
+        self.port.baudrate = 9600 
         self.start = None
         self.launched = False
         self.activated = False
         self.locked = False
 
     def log(self):
-        try:
+        if not os.path.exists(self.log_directory):
             os.makedirs(self.log_directory)
-        except FileExistsError:
-           # directory already exists
-           pass
         os.chdir(self.log_directory)
         # initialize log file
         with open(self.log_fname, 'w') as f:
@@ -57,7 +60,8 @@ class Logger():
                 self.write_csv(sense_data)
                 sense_data = []
             if counter % 500 == 0:
-                self.port.write("GOOD")
+                self.port.write("GOOD\n")
+                print("GOOD")
 
             # If the acceleration is more than 5G (less -5G b/c of the
             # orientation), determine that the rocket was launched
@@ -75,7 +79,7 @@ class Logger():
             if self.activated and counter % 10 == 0:
                 self.activate()
 
-            if activated and time.time() - self.start >= 60:
+            if self.activated and time.time() - self.start >= 60:
                 # set locked true to no longer call activated (stops sending command to Arduino)
                 self.locked = True
                 # set activated false to not call activate anymore once in 10 cycles
@@ -100,7 +104,7 @@ class Logger():
                     data.temp, data.p, data.humidity))
 
     def activate(self):
-        self.port.write("MOVE")
+        self.port.write("MOVE\n")
 
 
 
