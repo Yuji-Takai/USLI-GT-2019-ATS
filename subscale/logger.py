@@ -59,14 +59,15 @@ class Logger():
             if counter % 10 == 0:
                 self.write_csv(sense_data)
                 sense_data = []
-            if counter % 500 == 0:
+            if counter % 100 == 0:
                 self.port.write("GOOD\n")
                 print("GOOD")
 
             # If the acceleration is more than 5G (less -5G b/c of the
             # orientation), determine that the rocket was launched
-            if not self.launched and acceler['x'] <= -5:
+            if not self.launched and acceler['x'] <= -1.2:
                 self.launched = True
+                print(acceler['x'])
 
             # If the rocket was launched and the acceleration is negative G
             # and there is no activation made yet, activate the mechanism
