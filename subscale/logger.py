@@ -28,7 +28,7 @@ class Logger():
         GPIO.setmode(GPIO.BCM)
         GPIO.cleanup()
         #Set baud rate to 9600
-        self.port.baudrate = 9600 
+        self.port.baudrate = 9600
         self.start = None
         self.launched = False
         self.activated = False
@@ -63,16 +63,16 @@ class Logger():
                 self.port.write("GOOD\n")
                 print("GOOD")
 
-            # If the acceleration is more than 5G (less -5G b/c of the
-            # orientation), determine that the rocket was launched
-            if not self.launched and acceler['x'] <= -1.2:
+            # If the acceleration is more than 5G,
+            # determine that the rocket was launched
+            if not self.launched and acceler['x'] > 5:
                 self.launched = True
                 print(acceler['x'])
 
             # If the rocket was launched and the acceleration is negative G
             # and there is no activation made yet, activate the mechanism
             # activated is turned on
-            if self.launched and acceler['x'] > 0 and not self.activated and not self.locked:
+            if self.launched and acceler['x'] < 0 and not self.activated and not self.locked:
                 self.activated = True
                 self.start = time.time()
                 self.activate()
