@@ -17,28 +17,21 @@ with open("flight1.csv", "r") as csv_file:
             #print(*row)
             process.append_data(*row)
             if len(row[-1]) > 0:
-                print(row[-1])
+                pass
             if row[-1] == 'apogee':
                 break
 
 
-print(process.get_data()[:,0])
-print(process.get_data()[:,8])
+#print(process.get_column(0))
+#print(process.get_data()[:,8])
 
-print(len(process.get_data()[:,8]))
+#print(len(process.get_data()[:,8]))
 
-time_data = np.ndarray.tolist(process.get_data()[:,0])
+time_data = np.ndarray.tolist(process.get_column(name="time"))
 
-barometer_data = np.ndarray.tolist(process.get_data()[:, 8])
+barometer_data = np.ndarray.tolist(process.get_column(name="pressure"))
 
-accel_mag_data = process.get_data()[:,10]
-
-print(time_data)
-print(len(time_data))
-
-print(barometer_data)
-print(len(barometer_data))
-
+accel_mag_data = process.get_column(name="accel_mag")
 
 
 # # Plotting Velocity graph
