@@ -51,7 +51,7 @@ cd_derived.append(0)
 # Defining constants
 A = (4.33*0.165*4+(2.012 ** 2)*math.pi)/144.00 # projected area of the rocket (ft^2)
 g = -32.17405 # standard gravity (ft/s^2)
-Cd = 0.665 # drag coefficient
+Cd = 0.5 #0.665 # drag coefficient
 rho0 = 0.0023769 # air density (slug/ft^3) --> assumed constant but will try variable density
 m = 0.470099 # mass of rocket after motor burnout (slug)
 
@@ -109,6 +109,7 @@ for i in range(RANGE):
     #print(rho)
     # k1 calculation
     k1 = ode(g, A, Cd, rho, m, v_pred[-1])
+    print((k1-g)*m) #drag force
     # k2 calculation
     k2 = ode(g, A, Cd, rho, m, v_pred[-1] + k1 * 0.5)
     # k3 calculation

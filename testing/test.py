@@ -16,6 +16,10 @@ with open("flight1.csv", "r") as csv_file:
         else:
             #print(*row)
             process.append_data(*row)
+            if len(row[-1]) > 0:
+                print(row[-1])
+            if row[-1] == 'apogee':
+                break
 
 
 print(process.get_data()[:,0])
@@ -82,12 +86,14 @@ fig, ax = plt.subplots(subplot_kw=dict(projection="3d"))
 # see https://math.stackexchange.com/questions/2618527/converting-from-yaw-pitch-roll-to-vector
 
 def get_arrow(iter):
+    theta = process.get_data()[:, 4][iter]*(math.pi/180)
+    phi = process.get_data()[:, 6][iter]*(math.pi/180)
     x = 0
     y = 0
     z = 0
-    u = 0 # ignore roll process.get_data()[:, 5][iter]/180
-    v = math.cos(process.get_data()[:, 6][iter]*(math.pi/180))
-    w = math.sin(process.get_data()[:, 4][iter]*(math.pi/180))
+    u = math.cos(phi) * math.cos(theta)
+    v = math.sin(phi) * math.cos(theta)
+    w = math.sin(theta)
     return x,y,z,u,v,w
 
 quiver = ax.quiver(*get_arrow(0))
