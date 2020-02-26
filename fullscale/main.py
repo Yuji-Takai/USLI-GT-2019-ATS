@@ -28,7 +28,7 @@ class Main:
                     arr = prelaunch_buffer.toArray()
                     self.start_time = arr[0].time
                     arr[-1].event = Event.TAKE_OFF
-                    self.calculator.setBaseAlt(arr[-1].pressure)
+                    self.calculator.setBaseAlt(arr[-1].pressure) # TODO average pressure of entire buffer
                     for point in arr:
                         point.normalize(self.start_time)
                         self.logger.write(point)
