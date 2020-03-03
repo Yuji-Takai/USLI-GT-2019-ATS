@@ -3,8 +3,8 @@
 Apogee Targeting System (ATS) is a drag inducing system which allows the launch vehicle to approach our team's target apogee altitude for NASA USLI competition. This repository stores the source code of the software of ATS 2019 - 2020 version. 
 
 ## Contributors
-Yuji Takai 
-Alexander Puckhaber
++ Yuji Takai 
++ Alexander Puckhaber
 
 ## Subscale
 `subscale` contains `logger.py`, the logger file that was run on the first and second subscale flights in 2019. The main functionality implemented were logging the Sense HAT data and actuating the flaps after few seconds from launch. The acceleration value, which was used for detecting launch, maxed out, causing the detection logic to fail and the flaps did not actually actuate for subscale

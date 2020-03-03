@@ -10,6 +10,7 @@ EXP = (LAPSE_RATE * GAS_CONSTANT) / (MOLAR_MASS * STANDARD_GRAVITY) # used for p
 EXP_INVERSE = (MOLAR_MASS * STANDARD_GRAVITY) / (LAPSE_RATE * GAS_CONSTANT) # used for altitude to density conversion
 
 TAKEOFF_DETECTION_THRESHOLD = 5 # total acceleration threshold to detect take off (G)
+PRELAUNCH_BUFFER_SIZE = 5 # size of the buffer storing the prelaunch data
 
 STEP_SIZE = 0.01 # step size for Runge Kutta
 
