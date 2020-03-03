@@ -20,9 +20,11 @@ class Main:
         self.logger = Logger("{}_{}_{}_{}:{}.csv".format(today.year, today.month, today.day, today.hour, today.minute))
         self.rocket = rocket
         self.start_time = today
+        self.apogee_time = 0
 
     def run(self):
         prelaunch_buffer = CircularQueue(PRELAUNCH_BUFFER_SIZE)
+        print("moving to prelaunch state")
         while (self.rocket.state != RocketState.GROUND):
             data = self.sensor.getData()
             if (self.rocket.state == RocketState.PRELAUNCH):
@@ -65,6 +67,7 @@ class Main:
                     data.event = Event.APOGEE
                     self.actuator.retract()
                     self.rocket.state = RocketState.DESCENT
+                    self.apogee_time = data.time
                     print("moving to descent state")
                 self.logger.write(data)
             elif (self.rocket.state == RocketState.DESCENT):
@@ -72,8 +75,8 @@ class Main:
                 data.normalize(self.start_time)
                 self.calculator.compute(data)
                 print("Current velocity: {}".format(self.calculator.v_current()))
-                # TO DO need to make the detection of landing better since after apogee, there will be a time when the velocity is greater than -2
-                if self.calculator.v_current() > -2:
+                # Detect landing when velocity is be greated than -2 m/s and it has been at least 5 seconds after apogee
+                if self.calculator.v_current() > -2 and data.time - self.apogee_time > 5:
                     data.event = Event.TOUCH_DOWN
                     self.rocket.state = RocketState.GROUND
                     print("moving to ground state")

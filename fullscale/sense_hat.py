@@ -8,7 +8,7 @@ class SenseHat:
         self.count_temp = 0
         self.count_pressure = 0
         self.count_humidity = 0
-        self.file = "./data_only_launch.csv"
+        self.file = "./2019_11_14_20_12.csv"
         self.acceler = []
         self.orientation = []
         self.temp = []
@@ -21,15 +21,19 @@ class SenseHat:
         with open(self.file, "r") as f:
             csv_reader = csv.reader(f)
             head = True
-            for row in csv_reader:
-                if head:
-                    head = False
-                else:
-                    self.acceler.append(dict(x=float(row[1]), y=float(row[2]), z=float(row[3])))
-                    self.orientation.append(dict(pitch=float(row[4]), roll=float(row[5]), yaw=float(row[6])))
-                    self.temp.append(float(row[7]))
-                    self.pressure.append(float(row[8]))
-                    self.humidity.append(float(row[9]))
+            try:
+                for row in csv_reader:
+                    if head:
+                        head = False
+                    else:
+                        self.acceler.append(dict(x=float(row[1]), y=float(row[2]), z=float(row[3])))
+                        self.orientation.append(dict(pitch=float(row[4]), roll=float(row[5]), yaw=float(row[6])))
+                        self.temp.append(float(row[7]))
+                        self.pressure.append(float(row[8]))
+                        self.humidity.append(float(row[9]))
+            except csv.Error:
+                print("error")
+
 
     def get_accelerometer_raw(self):
         if self.count_acceler < len(self.acceler):
