@@ -9,8 +9,11 @@ from circular_queue import CircularQueue
 from constants import TAKEOFF_DETECTION_THRESHOLD, PRELAUNCH_BUFFER_SIZE
 import argparse
 class Main:
-    def __init__(self, rocket):
-        self.sensor = Sensor()
+    '''
+    Main class of the ATS software
+    '''
+    def __init__(self, rocket, test):
+        self.sensor = Sensor(test)
         self.calculator = Calculator(rocket)
         self.actuator = Actuator()
         today = datetime.now()
@@ -91,9 +94,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Choose the rocket type')
     parser.add_argument('-s', '--subscale', action="store_true", help="Choose if for subscale rocket")
     parser.add_argument('-f', '--fullscale', action="store_true", help="Choose if for fullscale rocket")
+    parser.add_argument('-t', '--test', action="store_true", help="Choose if testing software on laptop")
     args = parser.parse_args()
     if args.subscale:
-        Main(Rocket(RocketType.SUBSCALE)).run()
+        Main(Rocket(RocketType.SUBSCALE), args.test).run()
     else:
-        Main(Rocket(RocketType.FULLSCALE)).run()
+        Main(Rocket(RocketType.FULLSCALE), args.test).run()
 

@@ -1,5 +1,8 @@
 from communicator import Communicator
 class Actuator:
+    '''
+    Represents the actuator 
+    '''
     def __init__(self):
         self.communicator = Communicator()
 

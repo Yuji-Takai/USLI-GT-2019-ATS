@@ -1,6 +1,9 @@
 from math import sqrt
 from event import Event
 class SensorData():
+    '''
+    Represents the sensor data retreived from Sense HAT
+    '''
     def __init__(self, time, ax, ay, az, pitch, roll, yaw, temp, pressure, event = Event.DEFAULT):
         self.time = time
         self.ax = ax
@@ -19,9 +22,15 @@ class SensorData():
             (self.event if self.event != Event.DEFAULT else ""))
 
     def total_accel(self):
+        '''
+        returns the magnitude of the acceleration of the launch vehicle
+        '''
         return sqrt(self.ax ** 2 + self.ay ** 2 + self.az ** 2)
 
     def normalize(self, origin_time):
+        '''
+        normalize the time of the sensor data to the start time of the launch
+        '''
         time_change = self.time - origin_time
         self.time = time_change.days * 3600 + time_change.seconds + time_change.microseconds / 1000000.0
 

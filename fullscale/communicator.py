@@ -2,6 +2,10 @@
 # import serial
 
 class Communicator:
+    '''
+    Represents the communicator
+    The class is responsible for handling the communication between the Raspberry Pi and Arduino
+    '''
     def __init__(self):
         # self.port = serial.Serial("/dev/ttyAMA0")
         # #Setting up the GPIO Pins

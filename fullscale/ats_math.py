@@ -1,6 +1,10 @@
 import math
 from constants import ALT_CONST, PRESSURE_MSL, RHO_MSL, TEMP_MSL, LAPSE_RATE, EXP, EXP_INVERSE
 
+'''
+Math library for ATS software
+'''
+
 def inch2meter(inch):
     '''
     converts inches to meters
