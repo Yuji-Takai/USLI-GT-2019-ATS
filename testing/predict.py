@@ -51,7 +51,7 @@ cd_derived.append(0)
 # Defining constants
 A = (4.33*0.165*4+(2.012 ** 2)*math.pi)/144.00 # projected area of the rocket (ft^2)
 g = -32.17405 # standard gravity (ft/s^2)
-Cd = 0.5 #0.665 # drag coefficient
+Cd = 0.6635 #0.665 # drag coefficient
 rho0 = 0.0023769 # air density (slug/ft^3) --> assumed constant but will try variable density
 m = 0.470099 # mass of rocket after motor burnout (slug)
 
@@ -104,7 +104,7 @@ RANGE = 2000
 start = datetime.now() # variable to measure computation time
 
 # NOTE: I used a fixed number of iteration --> this could be shortened by stopping when velocity becomes negative
-for i in range(RANGE):
+while (v_pred[-1] > 0):
     rho = density_estimate(rho0, h_pred[-1])
     #print(rho)
     # k1 calculation
@@ -145,6 +145,7 @@ plt.title("Altitude")
 h1, = plt.plot(t_sense, h_sense, color='r', label="Actual altitude")
 h2, = plt.plot(t_alt, h_alt, color='b', label="Altimeter altitude")
 h3, = plt.plot(t, h_pred, color='g', label="Predicted altitude")
+plt.axhline(y=2500, color="y", linestyle="-")
 plt.legend(handles=[h1, h2, h3])
 plt.show()
 
