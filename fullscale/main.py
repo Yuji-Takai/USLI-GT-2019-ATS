@@ -24,6 +24,7 @@ class Main:
         self.apogee_time = 0
         self.ats_state = 0 # 0 for closed, 1 for open, 2 for transition from closed to open, -1 for transition from open to closed
         self.base_time = 0
+        self.sensor.sense.show_message("OK", text_colour=(0,255,0))
 
     def run(self):
         prelaunch_buffer = CircularQueue(PRELAUNCH_BUFFER_SIZE)
