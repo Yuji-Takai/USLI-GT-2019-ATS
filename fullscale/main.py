@@ -8,12 +8,13 @@ from datetime import datetime
 from circular_queue import CircularQueue
 from constants import TAKEOFF_DETECTION_THRESHOLD, PRELAUNCH_BUFFER_SIZE
 import argparse
+import time
 class Main:
     '''
     Main class of the ATS software
     '''
-    def __init__(self, rocket, test):
-        self.sensor = Sensor(test)
+    def __init__(self, rocket):
+        self.sensor = Sensor()
         self.calculator = Calculator(rocket)
         self.actuator = Actuator()
         today = datetime.now()
@@ -57,10 +58,10 @@ class Main:
                 # COAST state
                 data.normalize(self.start_time)
                 self.calculator.compute(data)
-                if self.calculator.predict() > self.rocket.target_alt:
-                    self.actuator.actuate()
-                else:
-                    self.actuator.retract()
+                # if self.calculator.predict() > self.rocket.target_alt:
+                #     self.actuator.actuate()
+                # else:
+                #     self.actuator.retract()
                 print("Current velocity: {}".format(self.calculator.v_current()))
                 # Checking if velocity of the launch vehicle is negative
                 if self.calculator.v_current() < 0:
@@ -97,10 +98,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Choose the rocket type')
     parser.add_argument('-s', '--subscale', action="store_true", help="Choose if for subscale rocket")
     parser.add_argument('-f', '--fullscale', action="store_true", help="Choose if for fullscale rocket")
-    parser.add_argument('-t', '--test', action="store_true", help="Choose if testing software on laptop")
+    parser.add_argument('-t', '--test', action="store_true", help="Choose if testing")
     args = parser.parse_args()
+    if not args.test:
+        time.sleep(60)
     if args.subscale:
-        Main(Rocket(RocketType.SUBSCALE), args.test).run()
+        Main(Rocket(RocketType.SUBSCALE)).run()
     else:
-        Main(Rocket(RocketType.FULLSCALE), args.test).run()
+        Main(Rocket(RocketType.FULLSCALE)).run()
 
