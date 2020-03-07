@@ -22,6 +22,8 @@ class Main:
         self.rocket = rocket
         self.start_time = today
         self.apogee_time = 0
+        self.ats_state = 0 # 0 for closed, 1 for open, 2 for transition from closed to open, -1 for transition from open to closed
+        self.base_time = 0
 
     def run(self):
         prelaunch_buffer = CircularQueue(PRELAUNCH_BUFFER_SIZE)
@@ -53,11 +55,43 @@ class Main:
                     self.rocket.state = RocketState.COAST
                     data.event = Event.MOTOR_BURNOUT
                     print("moving to coast state")
+                    self.base_time = data.time
                 self.logger.write(data)
             elif (self.rocket.state == RocketState.COAST):
                 # COAST state
                 data.normalize(self.start_time)
                 self.calculator.compute(data)
+
+                if self.ats_state == 0 and (data.time - self.base_time >= 1):
+                    # if been in closed state for more than 1 second, start opening the flaps
+                    self.ats_state = 2
+                    self.base_time = data.time
+                    self.actuator.actuate()
+                    data.command = "ACTUATE"
+                elif self.ats_state == 1 and (data.time - self.base_time >= 1):
+                    self.ats_state = -1 
+                    self.base_time = data.time
+                    self.actuator.retract()
+                    data.command = "RETRACT"
+                elif self.ats_state == 2:
+                    if (data.time - self.base_time < 2):
+                        self.actuator.actuate()
+                    else:
+                        self.ats_state = 1
+                        self.base_time = data.time
+                        data.command = "COMPLETED ACTUATION"
+                else:
+                    if (data.time - self.base_time < 2):
+                        self.actuator.retract()
+                    else:
+                        self.ats_state = 0
+                        self.base_time = data.time
+                        data.command = "COMPLETED RETRACTION"
+                        
+
+                    
+
+
                 # if self.calculator.predict() > self.rocket.target_alt:
                 #     self.actuator.actuate()
                 # else:

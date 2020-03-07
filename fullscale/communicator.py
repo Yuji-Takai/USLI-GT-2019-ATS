@@ -1,6 +1,6 @@
 # Uncomment the imports when running on Raspberry PI
-# import RPi.GPIO as GPIO
-# import serial
+import RPi.GPIO as GPIO
+import serial
 
 class Communicator:
     '''

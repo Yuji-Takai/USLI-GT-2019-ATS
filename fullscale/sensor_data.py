@@ -4,7 +4,7 @@ class SensorData():
     '''
     Represents the sensor data retreived from Sense HAT
     '''
-    def __init__(self, time, ax, ay, az, pitch, roll, yaw, temp, pressure, event = Event.DEFAULT):
+    def __init__(self, time, ax, ay, az, pitch, roll, yaw, temp, pressure, event = Event.DEFAULT, command = ""):
         self.time = time
         self.ax = ax
         self.ay = ay
@@ -15,6 +15,7 @@ class SensorData():
         self.temp = temp
         self.pressure = pressure
         self.event = event
+        self.command = command
 
     def __str__(self):
         return "{},{},{},{},{},{},{},{},{},{}".format(self.time, self.ax, self.ay,
