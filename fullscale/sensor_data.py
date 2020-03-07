@@ -18,9 +18,9 @@ class SensorData():
         self.command = command
 
     def __str__(self):
-        return "{},{},{},{},{},{},{},{},{},{}".format(self.time, self.ax, self.ay,
+        return "{},{},{},{},{},{},{},{},{},{},{}".format(self.time, self.ax, self.ay,
             self.az, self.pitch, self.roll, self.yaw, self.temp, self.pressure,
-            (self.event if self.event != Event.DEFAULT else ""))
+            (self.event if self.event != Event.DEFAULT else ""), self.command)
 
     def total_accel(self):
         '''

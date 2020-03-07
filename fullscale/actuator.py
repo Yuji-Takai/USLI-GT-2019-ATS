@@ -7,9 +7,9 @@ class Actuator:
         self.communicator = Communicator()
 
     def actuate(self):
-        self.communicator.send("ACT")
+        # self.communicator.send("ACT")
         print("ACT")
 
     def retract(self):
-        self.communicator.send("RET")
+        # self.communicator.send("RET")
         print("RET")
