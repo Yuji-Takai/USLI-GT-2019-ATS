@@ -19,7 +19,7 @@ class Logger:
         '''
         with open(self.fname, 'w') as f:
             f.write("{},{},{},{},{},{},{},{},{},{}\n".format("time", "ax",
-                "ay", "ax", "pitch", "roll", "yaw", "temperature", "pressure",
+                "ay", "az", "pitch", "roll", "yaw", "temperature", "pressure",
                 "event"))
 
     def write(self, data, length_threshold=20):
