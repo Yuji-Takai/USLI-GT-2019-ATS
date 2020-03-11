@@ -59,6 +59,7 @@ class Analyzer:
         self.alt_pred = [self.predict(self.v_sense[i], self.alt_sense[i], self.rocket.rocket_area_without_ATS()) for i in range(self.events["Apogee"])]
         self.alt_pred_smooth = self.smooth(self.alt_pred)
         self.Cd_sense = [self.compute_Cd(self.sense_hat_data[i].az, self.alt_sense[i], self.v_sense_smooth[i]) for i in range(self.events["Motor burnout"], self.events["Apogee"])]
+        print(self.rocket.rocket_area_without_ATS())
         
     def read_launch_data(self, launch_fname):
         '''
@@ -176,9 +177,7 @@ class Analyzer:
         '''
             Computes the coefficient of drag given vertical acceleration, altitude, and vertical velocity
         '''
-        return -2 * (self.rocket.mass * (az - 1) * STANDARD_GRAVITY + self.rocket.mass * STANDARD_GRAVITY) / (alt2rho(alt) * (self.rocket.rocket_area_without_ATS() + self.ats_total_area) * (v ** 2)) if v != 0 else 0 
-            
-
+        return -2 * (self.rocket.mass * (az - 1) * STANDARD_GRAVITY + self.rocket.mass * STANDARD_GRAVITY) / (alt2rho(alt) * 0.0194 * ((v - 25) ** 2)) if v != 0 else 0  # TODO better velocity value should be used
 if __name__ == "__main__":
     a = Analyzer(RocketType.FULLSCALE, "./data/fullscale/2020_3_7_11_10.csv", "./data/fullscale/OpenRocket_sim_data.csv", "./data/fullscale/Alt1FlightData.csv")
     print(a.smooth([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]))
