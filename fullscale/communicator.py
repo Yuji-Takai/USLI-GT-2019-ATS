@@ -18,5 +18,5 @@ class Communicator:
 
     def send(self, msg):
         # Uncomment when running on Raspberry Pi 
-        self.port.write("{}\n".format(msg).encode('UTF-8'))
+        self.port.write("{}\n".format(msg))
         print(msg)
