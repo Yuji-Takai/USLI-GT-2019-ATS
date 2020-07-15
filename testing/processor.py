@@ -1,6 +1,5 @@
 import numpy as np
-import pandas as pd
-from pykalman import KalmanFilter
+
 from datetime import datetime
 import pvlib.atmosphere
 
@@ -11,21 +10,23 @@ class Processor():
         print(self.labels.index("time"))
         # maybe try https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray ?
         self.data = np.zeros((2, 12))
+        self.zero_starters = True
         self.vectors = []
         self.startTime = None
         print(self.data)
 
-    def append_data(self, time, accel_x, accel_y, accel_z, pitch, roll, yaw, temperature, pressure, humidity, markers=0):
-        dt_obj = datetime.strptime(time,
-                                   '%Y-%m-%d %H:%M:%S.%f')
-        time = dt_obj.timestamp()
+    def append_data(self, str_time, accel_x, accel_y, accel_z, pitch, roll, yaw, temperature, pressure, humidity, markers=0):
+        #dt_obj = datetime.strptime(time,
+        #                           '%Y-%m-%d %H:%M:%S.%f')
+        #time = dt_obj.timestamp()
+        time = float(str_time)
 
-        if self.startTime == None:
+        if self.startTime is None:
             self.startTime = time
 
         time -= self.startTime
 
-        new_row = np.array([time, accel_x, accel_y, accel_z, pitch, roll, yaw, temperature, pressure, humidity])
+        new_row = np.array([time, accel_x, accel_y, accel_z, pitch, roll, yaw, temperature, pressure, "0.0"])
         new_row = new_row.astype(np.float)
 
         # calculate vectors
@@ -40,6 +41,11 @@ class Processor():
         new_row = np.append(new_row, alt)
 
         self.data = np.append(self.data, np.array([new_row]), axis=0)
+
+        # todo fix
+        if self.zero_starters:
+            self.data = self.data[2:]
+            self.zero_starters = False
 
 
 

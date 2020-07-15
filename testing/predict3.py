@@ -1,6 +1,8 @@
 import csv
 import math
 
+from filterpy.kalman import KalmanFilter
+# see https://filterpy.readthedocs.io/en/latest/kalman/KalmanFilter.html
 from processor import Processor
 import csv
 import numpy as np
@@ -60,36 +62,67 @@ STEP_SIZE = 0.01
 
 apogee_estimate = np.ndarray.tolist(process.get_column(name="altitude")[0:burnout_index])
 
-smooth_altitude = True
-smoothing = 2
 
-if smooth_altitude:
-    h_smoothed = running_mean(process.get_column(index=11), smoothing)
-    h_data = np.append(np.zeros(int(smoothing/2)), h_smoothed)
-    h_data = np.append(h_data, np.zeros(int(smoothing/2)-1))
-    h_data = np.ndarray.tolist(h_data)
-else:
-    h_data = np.ndarray.tolist((process.get_column(index=11)))
+sensor_readings = np.ndarray.tolist((process.get_column(index=11)))
+timesteps = np.ndarray.tolist((process.get_column(index=0)))
 
-print(len(h_data))
-print(len(process.get_data()))
+#print(process.get_column(index=0))
 
-print(h_data)
+# todo use numpy
+alt_list = []
+vel_list = []
+
+f = KalmanFilter(dim_x=2, dim_z=1)
+
+f.x = np.array([2., 0.])
+
+transition_matrix = np.array([[1., 1.], [0., 1.]])
+
+f.F = transition_matrix
+
+f.H = np.array([[1., 0.]])
+
+f.P = np.array([[1000., 0.], [0., 1000.]])
+
+f.R = np.array([[5.]])
+
+from filterpy.common import Q_discrete_white_noise
+
+f.Q = Q_discrete_white_noise(dim=2, dt=1., var=0.13)
 
 
+for i in range(0, len(sensor_readings)):
+    sensor_reading = sensor_readings[i]
+    if i + 1 < len(sensor_readings):
+        delta_t = timesteps[i+1] - timesteps[i]
 
-v_data = [0]
+    #print(delta_t)
+    f.F = np.array([[1., delta_t], [0., 1.]])
+    f.Q = Q_discrete_white_noise(dim=2, dt=delta_t*10, var=0.13)
+    print(f.F)
+    #print(sensor_reading)
+    z = sensor_reading
+    f.predict()
+    f.update(z)
+    alt_list.append(f.x[0])
+    vel_list.append(f.x[1])
+
+h_data = alt_list
+v_data = vel_list
+v_data_kalman = vel_list
+
+v_data_euler = [0]
 
 #TODO move velocity calculation to processor
 for i in range(1, len(h_data)):
     vel = (h_data[i] - h_data[i-1]) / (process.get_column(name="time")[i] - process.get_column(name="time")[i-1])
     if vel > -100 and vel < 300:
-        v_data.append(vel)
+        v_data_euler.append(vel)
     else:
-        v_data.append(0)
+        v_data_euler.append(0)
 
-print(burnout_index)
-print(v_data)
+
+v_data = v_data_euler
 
 for test in range(burnout_index, len(process.get_data())):
     t = [process.get_column(name="time")[test]]
@@ -140,10 +173,11 @@ apogee_estimate_moving_avg = running_mean(apogee_estimate, 10)
 plt.figure(1)
 plt.title("Altitude")
 h1, = plt.plot(process.get_column(name="time"), process.get_column(name="altitude"), color='g', label="Altimeter altitude")
-h2, = plt.plot(process.get_column(name="time"), h_data, color='r', label="Altimeter altitude (10 moving avg)")
+h2, = plt.plot(process.get_column(name="time"), h_data, color='r', label="Filtered Altitude")
 h3, = plt.plot(process.get_column(name="time")[0:len(apogee_estimate)], apogee_estimate, color='b', label="Estimated apogee at point")
 h4, = plt.plot(process.get_column(name="time")[0:len(apogee_estimate_moving_avg)], apogee_estimate_moving_avg, lw=4, color='purple', label="Estimated apogee at point with 10 moving avg")
 h5, = plt.plot(process.get_column(name="time"), process.get_column(name="accel_mag"), color='black', label="Accel mag")
-h6, = plt.plot(process.get_column(name="time"), v_data, color='purple', label='vertical velocity')
-plt.legend(handles=[h1, h2, h3, h4, h5, h6])
+h6, = plt.plot(process.get_column(name="time"), v_data_kalman, color='purple', label='vertical velocity')
+h7, = plt.plot(process.get_column(name="time"), v_data_euler, color='brown', label='euler 1st order vertical velocity')
+plt.legend(handles=[h1, h2, h3, h4, h5, h6, h7])
 plt.show()
