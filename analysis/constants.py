@@ -16,7 +16,7 @@ STEP_SIZE = 0.01 # step size for Runge Kutta
 
 FULLSCALE = {'motor burnout time': 2.3,         # motor burnout time for AeroTech L2200 (s)
     'target altitude': 4800,                    # target apogee altitude (ft)
-    'diameter': 6.188,                   # rocket radius (in)
+    'diameter': 6.188,                          # rocket radius (in)
     'fin height': 12,                           # fin height (in)
     'fin thickness': 0.25,                      # fin thickness (in)
     'fin number': 4,                            # number of fins
@@ -26,10 +26,19 @@ FULLSCALE = {'motor burnout time': 2.3,         # motor burnout time for AeroTec
 
 SUBSCALE = {'motor burnout time': 1.6,          # motor burnout time for AeroTech J800 (s)
     'target altitude': 2500,                    # target apogee altitude (ft)
-    'diameter': 4.024,                   # rocket radius (in)
+    'diameter': 4.024,                          # rocket radius (in)
     'fin height': 4.33,                         # fin height (in)
     'fin thickness': 0.165,                     # fin thickness (in)
     'fin number': 4,                            # number of fins
-    'mass': 242,                                 # rocket mass (oz)
+    'mass': 242,                                # rocket mass (oz)
     'drag coefficient': 0.665                   # drag coefficient - TODO: make a feedback loop to derive drag coefficient
+    }
+
+ATS_FULLSCALE = {'flap number': 3,
+    'config1': (0, 0),
+    'config2': (60, 0.2703),
+    'config3': (120, 0.9114),
+    'config4': (180, 1.5244),
+    'config5': (240, 2.0955),
+    'config6': (300, 2.6336)
     }

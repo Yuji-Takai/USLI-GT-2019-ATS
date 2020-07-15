@@ -1,6 +1,6 @@
 # Uncomment the imports when running on Raspberry PI
-# import RPi.GPIO as GPIO
-# import serial
+import RPi.GPIO as GPIO
+import serial
 
 class Communicator:
     '''
@@ -9,14 +9,14 @@ class Communicator:
     '''
     def __init__(self):
         # Uncomment when running on Raspberry Pi
-        # self.port = serial.Serial("/dev/ttyAMA0")
-        # GPIO.setwarnings(False)
-        # GPIO.setmode(GPIO.BCM)
-        # GPIO.cleanup()
-        # self.port.baudrate = 9600
+        self.port = serial.Serial("/dev/ttyAMA0")
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.cleanup()
+        self.port.baudrate = 9600
         self.status = "ALIVE"
 
     def send(self, msg):
         # Uncomment when running on Raspberry Pi 
-        # self.port.write("{}\n".format(msg).encode('UTF-8'))
+        self.port.write("{}\n".format(msg).encode('utf-8'))
         print(msg)
