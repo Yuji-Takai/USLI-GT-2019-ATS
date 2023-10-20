@@ -52,7 +52,8 @@ def running_mean(x, N):
     return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 # Defining constants
-A = 194.05E-4  #82.05E-4 # 82.05 cm^2 to m^2 (value from openrocket)
+# A = 194.05E-4  #82.05E-4 # 82.05 cm^2 to m^2 (value from openrocket)
+A = 82.05E-4
 g = -9.81
 Cd = 0.63
 rho0 = 1.225    # kg/m^3
@@ -88,7 +89,7 @@ f.R = np.array([[5.]])
 
 from filterpy.common import Q_discrete_white_noise
 
-f.Q = Q_discrete_white_noise(dim=2, dt=1., var=0.13)
+f.Q = Q_discrete_white_noise(dim=2, dt=1., var=0.01)
 
 
 for i in range(0, len(sensor_readings)):
@@ -98,7 +99,7 @@ for i in range(0, len(sensor_readings)):
 
     #print(delta_t)
     f.F = np.array([[1., delta_t], [0., 1.]])
-    f.Q = Q_discrete_white_noise(dim=2, dt=delta_t*10, var=0.13)
+    f.Q = Q_discrete_white_noise(dim=2, dt=delta_t*10, var=1.0)
     print(f.F)
     #print(sensor_reading)
     z = sensor_reading

@@ -50,7 +50,7 @@ def running_mean(x, N):
     return (cumsum[N:] - cumsum[:-N]) / float(N)
 
 # Defining constants
-A = 194.05E-4  #82.05E-4 # 82.05 cm^2 to m^2 (value from openrocket)
+A = 82.05e-4 #194.05E-4  #82.05E-4 # 82.05 cm^2 to m^2 (value from openrocket)
 g = -9.81
 Cd = 0.63
 rho0 = 1.225    # kg/m^3
